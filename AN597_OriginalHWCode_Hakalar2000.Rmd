@@ -94,7 +94,7 @@ z.prop.test<-function(x, y, p){
 
 x <- c(1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 
     1, 0)
-y <- c(1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 
+n <- c(1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 
     0, 1, 1, 0, 1, 1, 1)
 
 #I got no idea why this error keeps popping up...
@@ -106,19 +106,37 @@ a
 
 #lets try again:
 
-test<-function(x, y) {
+test<-function(x, y = NULL, l, tail = c("greater", "less", "two.sided")) {
   n1<-length(x)
   n2<-length(y)
   p1<-sum(x>=1)/n1
   p2<-sum(y>=1)/n2
-  if (n1 * p1 > 5 || n1*(1-p1) > 5 || n2 * p2 > 5 || n2 * 1-p2 > 5){
-      print("Warning: your parameters are fucked")
-      } else {
-      print("hey, you did something")
-    }
+  conf.level = l
+  
+  if (n1 * p1 < 5 || n1*(1-p1) < 5){
+      print("Warning: n and p values do not meet criterai")
+      } 
+  else if (n1 * p1 > 5 || n1*(1-p1) > 5) {
+    print("good job")
+  }
+  else if (n2 * p2 < 5 || n2*(1-p2) < 5)
+    print("Warning: n and p values do not meet criterai")
+  else {
+    print("good job")
+  }
+
+  if (tail =="greater"){prop.test(x = sum(x), n = n1, p = p1, conf.level = l, correct = FALSE, alternative = "greater")
+  } 
+  else if (tail =="less") {prop.test(x = sum(x), n = n1, p = p1, conf.level = l, correct = FALSE, alternative = "less")
+  }
+  else(prop.test(x = c(sum(x), sum(y)), n = c(n1, n2), p = c(p1, p2), conf.level = l, correct = FALSE, alternative = "two.sided"))
 }
 
-test(x, y)
+test(x, y = n, l = 0.95, tail = "two.sided")
+
+#FUK YAALLLLLLL. HELLO WORLD HELLO!!!
+
+#yay parameters!
 
 ```
 
